@@ -809,7 +809,15 @@ class _SharedFile(object):
         self._close = close
         self._lock = lock
         self._writing = writing
-        self.seekable = file.seekable
+        try:
+            self.seekable = file.seekable
+        except AttributeError:
+            self.seekable = lambda: False
+            try:
+                file.seek(0, os.SEEK_SET)
+                self.seekable = lambda: True
+            except OSError:
+                pass
         self.tell = file.tell
 
     def seek(self, offset, whence=0):

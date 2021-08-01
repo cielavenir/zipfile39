@@ -10,7 +10,7 @@ setup(
     name='zipfile39',
     description='zipfile39',
     long_description=open("README.md").read(),
-    version='0.0.0.3',
+    version='0.0.0.4',
     url='https://github.com/cielavenir/zipfile39',
     license='PSF',
     author='cielavenir',
