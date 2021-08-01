@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 #coding:utf-8
 
 """
@@ -539,8 +540,9 @@ class ZipInfo (object):
         this will be the same as filename, but without a drive letter and with
         leading path separators removed).
         """
-        # if isinstance(filename, os.PathLike):
-        #     filename = os.fspath(filename)
+        if sys.version_info[0]>=3:
+            if isinstance(filename, os.PathLike):
+                filename = os.fspath(filename)
         st = os.stat(filename)
         isdir = stat.S_ISDIR(st.st_mode)
         mtime = time.localtime(st.st_mtime)
@@ -1310,9 +1312,11 @@ class ZipFile(object):
         self._strict_timestamps = strict_timestamps
 
         # Check if we were passed a file-like object
-        # if isinstance(file, os.PathLike):
-        #     file = os.fspath(file)
-        if isinstance(file, str):
+        if sys.version_info[0]>=3:
+            basestring = str
+            if isinstance(file, os.PathLike):
+                file = os.fspath(file)
+        if isinstance(file, basestring):
             # No, it's a filename
             self._filePassed = 0
             self.filename = file
@@ -1853,8 +1857,9 @@ class ZipFile(object):
         it is encoded as UTF-8 first.
         'zinfo_or_arcname' is either a ZipInfo instance or
         the name of the file in the archive."""
-        if isinstance(data, str):
-            data = data.encode("utf-8")
+        if sys.version_info[0]>=3:
+            if isinstance(data, str):
+                data = data.encode("utf-8")
         if not isinstance(zinfo_or_arcname, ZipInfo):
             zinfo = ZipInfo(filename=zinfo_or_arcname,
                             date_time=time.localtime(time.time())[:6])
