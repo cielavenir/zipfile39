@@ -72,6 +72,9 @@ def filterfalse(predicate, iterable):
 if not hasattr(itertools, 'filterfalse'):
     itertools.filterfalse = filterfalse
 
+if sys.version_info[0]>=3:
+    basestring = str
+
 __all__ = ["BadZipFile", "BadZipfile", "error",
            "ZIP_STORED", "ZIP_DEFLATED", "ZIP_BZIP2", "ZIP_LZMA",
            "ZIP_ZSTANDARD", "ZIP_XZ",
@@ -1313,7 +1316,6 @@ class ZipFile(object):
 
         # Check if we were passed a file-like object
         if sys.version_info[0]>=3:
-            basestring = str
             if isinstance(file, os.PathLike):
                 file = os.fspath(file)
         if isinstance(file, basestring):
