@@ -8,9 +8,9 @@ else:
 
 setup(
     name='zipfile39',
-    description='zipfile39',
+    description='Backport of zipfile Python 3.9 to Python 2.7 with some enhancements',
     long_description=open("README.md").read(),
-    version='0.0.0.4',
+    version='0.0.0.5',
     url='https://github.com/cielavenir/zipfile39',
     license='PSF',
     author='cielavenir',

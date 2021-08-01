@@ -776,7 +776,7 @@ def _get_compressor(compress_type, compresslevel=None):
     elif compress_type == ZIP_ZSTANDARD:
         if compresslevel is None:
             compresslevel = 3
-        return zstandard.ZstdCompressor(level=compresslevel).compressobj()
+        return zstandard.ZstdCompressor(level=compresslevel, threads=4).compressobj()
     else:
         return None
 
