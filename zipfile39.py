@@ -61,6 +61,11 @@ try:
 except ImportError:
     zstandard = None
 
+try:
+    from zipfile_deflate64 import deflate64 # We may need its compression method
+except ImportError:
+    deflate64 = None
+
 def filterfalse(predicate, iterable):
     # filterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
     if predicate is None:
@@ -101,6 +106,7 @@ ZIP_MAX_COMMENT = (1 << 16) - 1
 # constants for Zip file compression methods
 ZIP_STORED = 0
 ZIP_DEFLATED = 8
+ZIP_DEFLATED64 = 9
 ZIP_BZIP2 = 12
 ZIP_LZMA = 14
 ZIP_ZSTANDARD = 93
@@ -743,6 +749,10 @@ def _check_compression(compression):
         if not zlib:
             raise RuntimeError(
                 "Compression requires the (missing) zlib module")
+    elif compression == ZIP_DEFLATED64:
+        if not deflate64:
+            raise RuntimeError(
+                "Compression requires the (missing) deflate64 module")
     elif compression == ZIP_BZIP2:
         if not bz2:
             raise RuntimeError(
@@ -786,6 +796,8 @@ def _get_decompressor(compress_type):
         return None
     elif compress_type == ZIP_DEFLATED:
         return zlib.decompressobj(-15)
+    elif compress_type == ZIP_DEFLATED64:
+        return deflate64.Deflate64()
     elif compress_type == ZIP_BZIP2:
         return bz2.BZ2Decompressor()
     elif compress_type == ZIP_LZMA:
@@ -932,6 +944,8 @@ class ZipExtFile(io.BufferedIOBase):
             if h != check_byte:
                 raise RuntimeError("Bad password for file %r" % zipinfo.orig_filename)
 
+        if self._compress_type == ZIP_DEFLATED64:
+            self.MIN_READ_SIZE = 64 * 2**10
 
     def _init_decrypter(self):
         self._decrypter = _ZipDecrypter(self._pwd)
