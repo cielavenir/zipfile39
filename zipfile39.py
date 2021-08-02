@@ -2531,6 +2531,10 @@ def main(args=None):
                        help='Create zipfile from sources')
     group.add_argument('-t', '--test', metavar='<zipfile>',
                        help='Test if a zipfile is valid')
+    parser.add_argument('-m', '--method', type=str, metavar='<method>', default='DEFLATE',
+                       help='compression method (must come before -c)')
+    parser.add_argument('-x', '--level', type=int, metavar='<level>', default=None,
+                       help='compression level (must come before -c)')
     args = parser.parse_args(args)
 
     if args.test is not None:
@@ -2554,10 +2558,16 @@ def main(args=None):
     elif args.create is not None:
         zip_name = args.create.pop(0)
         files = args.create
+        smethod = args.method.upper()
+        if smethod == 'DEFLATE':
+            smethod = 'DEFLATED'
+        if smethod == 'STORE':
+            smethod = 'STORED'
+        method = globals()['ZIP_'+smethod]
 
         def addToZip(zf, path, zippath):
             if os.path.isfile(path):
-                zf.write(path, zippath, ZIP_DEFLATED)
+                zf.write(path, zippath, method)
             elif os.path.isdir(path):
                 if zippath:
                     zf.write(path, zippath)
@@ -2566,7 +2576,7 @@ def main(args=None):
                              os.path.join(path, nm), os.path.join(zippath, nm))
             # else: ignore
 
-        with ZipFile(zip_name, 'w') as zf:
+        with ZipFile(zip_name, 'w', compression=method, compresslevel=args.level) as zf:
             for path in files:
                 zippath = os.path.basename(path)
                 if not zippath:
