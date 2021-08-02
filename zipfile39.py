@@ -642,11 +642,19 @@ class _ZipDecrypter(object):
 
 class LZMACompressor(object):
 
-    def __init__(self):
+    def __init__(self, level=None):
         self._comp = None
+        self._level = None
+        self._level = level
+        if self._level is None:
+            self._level = 6
+        if self._level < 1:
+            self._level = 1
+        if self._level > 9:
+            self._level = 9
 
     def _init(self):
-        props = lzma._encode_filter_properties({'id': lzma.FILTER_LZMA1})
+        props = lzma._encode_filter_properties({'id': lzma.FILTER_LZMA1, 'preset': self._level})
         self._comp = lzma.LZMACompressor(lzma.FORMAT_RAW, filters=[
             lzma._decode_filter_properties(lzma.FILTER_LZMA1, props)
         ])
@@ -740,6 +748,7 @@ compressor_names = {
     96: 'jpeg',
     97: 'wavpack',
     98: 'ppmd',
+    99: 'aes',
 }
 
 def _check_compression(compression):
@@ -765,6 +774,10 @@ def _check_compression(compression):
         if not zstandard:
             raise RuntimeError(
                 "Compression requires the (missing) zstandard module")
+    elif compression == ZIP_PPMD:
+        if not pyppmd:
+            raise RuntimeError(
+                "Compression requires the (missing) pyppmd module")
     else:
         raise NotImplementedError("That compression method is not supported")
 
@@ -774,19 +787,24 @@ def _get_compressor(compress_type, compresslevel=None):
         if compresslevel is not None:
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
+    # elif compress_type == ZIP_DEFLATED64:  # compression unimplemented
     elif compress_type == ZIP_BZIP2:
         if compresslevel is not None:
             return bz2.BZ2Compressor(compresslevel)
         return bz2.BZ2Compressor()
-    # compresslevel is ignored for ZIP_LZMA
     elif compress_type == ZIP_LZMA:
-        return LZMACompressor()
+        assert lzma is not None
+        return LZMACompressor(compresslevel)
     elif compress_type == ZIP_XZ:
+        assert lzma is not None
         return XZCompressor(compresslevel)
     elif compress_type == ZIP_ZSTANDARD:
         if compresslevel is None:
             compresslevel = 3
         return zstandard.ZstdCompressor(level=compresslevel, threads=4).compressobj()
+    elif compress_type == ZIP_PPMD:
+        assert pyppmd is not None
+        return PPMDCompressor(compresslevel)
     else:
         return None
 
@@ -806,6 +824,8 @@ def _get_decompressor(compress_type):
         return XZDecompressor()
     elif compress_type == ZIP_ZSTANDARD:
         return zstandard.ZstdDecompressor().decompressobj()
+    elif compress_type == ZIP_PPMD:
+        return PPMDDecompressor()
     else:
         descr = compressor_names.get(compress_type)
         if descr:
@@ -1116,6 +1136,8 @@ class ZipExtFile(io.BufferedIOBase):
         else:
             data = self._decompressor.decompress(data)
             self._eof = getattr(self._decompressor, 'eof', False) or self._compress_left <= 0
+            if self._compress_type == ZIP_PPMD and self._eof:
+                data += self._decompressor.flush()
 
         data = data[:self._left]
         self._left -= len(data)
