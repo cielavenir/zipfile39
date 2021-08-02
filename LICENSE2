@@ -1,0 +1,4 @@
+- backports.lzma Peter J. A. Cock, 3-clause BSDL
+- zstandard Gregory Szorc, 3-clause BSDL
+- pyppmd Hiroshi Miura, LGPL 2.1+
+- zipfile-deflate64 Brian Helba, Apache License 2.0
