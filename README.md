@@ -5,6 +5,9 @@
 - Introduces ZIP_DEFLATED64 (method 9), ZIP_ZSTANDARD(method 93), ZIP_XZ (method 95) and ZIP_PPMD (method 98) handlers.
     - ZIP_ZSTANDARD Python2 uses zstandard 0.14.1 (the last compatible version).
     - Due to bindings availability, DEFLATED64 and PPMD are Python3 only.
+- If isal is installed:
+    - crc32 and inflation are accelerated automatically.
+    - compresslevel -1, -2 and -3 are available, which correspond to isal compression level 1, 2 and 3.
 
 - Installation requisites:
     - pathlib2 (Python2 only)
@@ -15,4 +18,4 @@
 - Optional requisites (only available for Python3):
     - pyppmd (currenty need `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible`)
     - zipfile_deflate64
-
+    - isal

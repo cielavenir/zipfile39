@@ -36,12 +36,19 @@ try:
 except ImportError:
     from contextlib2 import suppress
 
+crc32 = binascii.crc32
+
 try:
     import zlib # We may need its compression method
     crc32 = zlib.crc32
 except ImportError:
     zlib = None
-    crc32 = binascii.crc32
+
+try:
+    from isal import isal_zlib
+    crc32 = isal_zlib.crc32
+except ImportError:
+    isal_zlib = None
 
 try:
     import bz2 # We may need its compression method
@@ -862,6 +869,9 @@ def _check_compression(compression):
 def _get_compressor(compress_type, compresslevel=None):
     if compress_type == ZIP_DEFLATED:
         if compresslevel is not None:
+            if compresslevel<0:
+                assert isal_zlib is not None
+                return isal_zlib.compressobj(-compresslevel, isal_zlib.DEFLATED, -15, 9)
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
     # elif compress_type == ZIP_DEFLATED64:  # compression unimplemented
@@ -890,6 +900,8 @@ def _get_decompressor(compress_type):
     if compress_type == ZIP_STORED:
         return None
     elif compress_type == ZIP_DEFLATED:
+        if isal_zlib is not None:
+            return isal_zlib.decompressobj(-15)
         return zlib.decompressobj(-15)
     elif compress_type == ZIP_DEFLATED64:
         return deflate64.Deflate64()
