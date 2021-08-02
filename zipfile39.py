@@ -66,6 +66,12 @@ try:
 except ImportError:
     deflate64 = None
 
+try:
+    ### do note that master is not compatible; need `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible`.
+    import pyppmd # We may need its compression method
+except ImportError:
+    pyppmd = None
+
 def filterfalse(predicate, iterable):
     # filterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
     if predicate is None:
@@ -82,8 +88,7 @@ if sys.version_info[0]>=3:
 
 __all__ = ["BadZipFile", "BadZipfile", "error",
            "ZIP_STORED", "ZIP_DEFLATED", "ZIP_BZIP2", "ZIP_LZMA",
-           "ZIP_ZSTANDARD", "ZIP_XZ",
-           # "ZIP_PPMD", # not implemented
+           "ZIP_ZSTANDARD", "ZIP_XZ", "ZIP_PPMD",
            "is_zipfile", "ZipInfo", "ZipFile", "PyZipFile", "LargeZipFile",
            "Path"]
 
@@ -111,7 +116,7 @@ ZIP_BZIP2 = 12
 ZIP_LZMA = 14
 ZIP_ZSTANDARD = 93
 ZIP_XZ = 95
-# ZIP_PPMD = 98
+ZIP_PPMD = 98
 # Other ZIP compression methods not supported
 
 DEFAULT_VERSION = 20
@@ -494,6 +499,12 @@ class ZipInfo (object):
             min_version = max(BZIP2_VERSION, min_version)
         elif self.compress_type == ZIP_LZMA:
             min_version = max(LZMA_VERSION, min_version)
+        elif self.compress_type == ZIP_XZ:
+            min_version = max(XZ_VERSION, min_version)
+        elif self.compress_type == ZIP_ZSTANDARD:
+            min_version = max(ZSTANDARD_VERSION, min_version)
+        elif self.compress_type == ZIP_PPMD:
+            min_version = max(PPMD_VERSION, min_version)
 
         self.extract_version = max(min_version, self.extract_version)
         self.create_version = max(min_version, self.create_version)
@@ -723,6 +734,72 @@ class XZDecompressor(object):
         if self._decomp is None:
             self._decomp = lzma.LZMADecompressor(lzma.FORMAT_XZ)
         result = self._decomp.decompress(data)
+        self.eof = self._decomp.eof
+        return result
+
+class PPMDCompressor(object):
+
+    def __init__(self, level=None):
+        self._comp = None
+        self._level = level
+        if self._level is None:
+            self._level = 5
+        if self._level < 1:
+            self._level = 1
+        if self._level > 9:
+            self._level = 9
+
+    def _init(self):
+        ### level interpretation ###
+        # https://github.com/jinfeihan57/p7zip/blob/v17.04/CPP/7zip/Compress/PpmdZip.cpp#L155
+        # by the way, using numeric parameter is not covered by LGPL.
+        order = 3 + self._level
+        sasize = 1 << min(self._level, 8)
+        restore_method = 0 if self._level < 7 else 1
+        ### level interpretation end ###
+
+        prop = (order-1) | (sasize-1)<<4 | (restore_method)<<12;
+        self._comp = pyppmd.Ppmd8Encoder(order, sasize<<20, restore_method=restore_method)
+        return struct.pack('<H', prop)
+
+    def compress(self, data):
+        if self._comp is None:
+            return self._init() + self._comp.encode(data)
+        return self._comp.compress(data)
+
+    def flush(self):
+        if self._comp is None:
+            return self._init() + self._comp.flush()
+        return self._comp.flush()
+
+class PPMDDecompressor(object):
+
+    def __init__(self):
+        self._decomp = None
+        self._unconsumed = b''
+        self.eof = False
+
+    def decompress(self, data):
+        if self._decomp is None:
+            self._unconsumed += data
+            if len(self._unconsumed) <= 2:
+                return b''
+            prop, = struct.unpack('<H', self._unconsumed[:2])
+            order = (prop&0x000f)+1
+            sasize = ((prop&0x0ff0)>>4)+1
+            restore_method = (prop&0xf000)>>12
+
+            # assert restore_method == 0, "Ppmd8Decoder interface does not allow decoding restore_method!=0"
+            self._decomp = pyppmd.Ppmd8Decoder(order, sasize<<20, restore_method=restore_method)
+            data = self._unconsumed[2:]
+            del self._unconsumed
+
+        result = self._decomp.decode(data)
+        self.eof = self._decomp.eof
+        return result
+
+    def flush(self):
+        result = self._decomp.decode(b'')
         self.eof = self._decomp.eof
         return result
 
