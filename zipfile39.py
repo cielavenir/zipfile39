@@ -759,7 +759,7 @@ class PPMDCompressor(object):
     def _init(self):
         ### level interpretation ###
         # https://github.com/jinfeihan57/p7zip/blob/v17.04/CPP/7zip/Compress/PpmdZip.cpp#L155
-        # by the way, using numeric parameter is not covered by LGPL.
+        # by the way, using numeric parameter is not covered by LGPL (according to clause 3).
         order = 3 + self._level
         sasize = 1 << min(self._level, 8)
         restore_method = 0 if self._level < 7 else 1
