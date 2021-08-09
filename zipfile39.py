@@ -74,8 +74,8 @@ except ImportError:
     deflate64 = None
 
 try:
-    ### do note that master is not compatible; need `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible`.
-    import pyppmd # We may need its compression method
+    ### need `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible2`.
+    import pyppmd_zip as pyppmd # We may need its compression method
 except ImportError:
     pyppmd = None
 
@@ -805,11 +805,6 @@ class PPMDDecompressor(object):
         self.eof = self._decomp.eof
         return result
 
-    def flush(self):
-        result = self._decomp.decode(b'')
-        self.eof = self._decomp.eof
-        return result
-
 compressor_names = {
     0: 'store',
     1: 'shrink',
@@ -1225,8 +1220,6 @@ class ZipExtFile(io.BufferedIOBase):
         else:
             data = self._decompressor.decompress(data)
             self._eof = getattr(self._decompressor, 'eof', False) or self._compress_left <= 0
-            if self._compress_type == ZIP_PPMD and self._eof:
-                data += self._decompressor.flush()
 
         data = data[:self._left]
         self._left -= len(data)
