@@ -17,8 +17,9 @@
     - zstandard
     - isal
         - Python2 need https://github.com/cielavenir/python-isal-py2/releases/tag/v0.11.0-py2
-    - pyppmd
-        - experimental; need zipfile39_compatible branch for now
+    - pyppmd_zip
+        - experimental; need zipfile39_compatible2 branch for now
+            - I changed the package name to avoid confusion.
         - Python2 need https://github.com/cielavenir/pyppmd/releases/tag/v0.15.2.3 (or `setup.py bdist_wheel` locally)
         - Python3 can do `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible2`
 - Optional requisites (only available for Python3):
