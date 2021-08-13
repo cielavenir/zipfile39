@@ -74,8 +74,7 @@ except ImportError:
     deflate64 = None
 
 try:
-    ### need `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible2`.
-    import pyppmd_zip as pyppmd # We may need its compression method
+    import pyppmd # We may need its compression method
 except ImportError:
     pyppmd = None
 
@@ -766,7 +765,7 @@ class PPMDCompressor(object):
         ### level interpretation end ###
 
         prop = (order-1) | (sasize-1)<<4 | (restore_method)<<12;
-        self._comp = pyppmd.Ppmd8Encoder(order, sasize<<20, restore_method=restore_method)
+        self._comp = pyppmd.Ppmd8Encoder(order, sasize<<20, restore_method=restore_method, endmark=False)
         return struct.pack('<H', prop)
 
     def compress(self, data):
@@ -796,8 +795,7 @@ class PPMDDecompressor(object):
             sasize = ((prop&0x0ff0)>>4)+1
             restore_method = (prop&0xf000)>>12
 
-            # assert restore_method == 0, "Ppmd8Decoder interface does not allow decoding restore_method!=0"
-            self._decomp = pyppmd.Ppmd8Decoder(order, sasize<<20, restore_method=restore_method)
+            self._decomp = pyppmd.Ppmd8Decoder(order, sasize<<20, restore_method=restore_method, endmark=False)
             data = self._unconsumed[2:]
             del self._unconsumed
 
