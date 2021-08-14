@@ -714,35 +714,6 @@ class LZMADecompressor(object):
         self.eof = self._decomp.eof
         return result
 
-class XZCompressor(object):
-
-    def __init__(self, preset=None):
-        self._comp = None
-        self._preset = preset
-
-    def compress(self, data):
-        if self._comp is None:
-            self._comp = lzma.LZMACompressor(lzma.FORMAT_XZ, preset=self._preset)
-        return self._comp.compress(data)
-
-    def flush(self):
-        if self._comp is None:
-            self._comp = lzma.LZMACompressor(lzma.FORMAT_XZ, preset=self._preset)
-        return self._comp.flush()
-
-class XZDecompressor(object):
-
-    def __init__(self):
-        self._decomp = None
-        self.eof = False
-
-    def decompress(self, data):
-        if self._decomp is None:
-            self._decomp = lzma.LZMADecompressor(lzma.FORMAT_XZ)
-        result = self._decomp.decompress(data)
-        self.eof = self._decomp.eof
-        return result
-
 class PPMDCompressor(object):
 
     def __init__(self, level=None):
@@ -876,8 +847,7 @@ def _get_compressor(compress_type, compresslevel=None):
         assert lzma is not None
         return LZMACompressor(compresslevel)
     elif compress_type == ZIP_XZ:
-        assert lzma is not None
-        return XZCompressor(compresslevel)
+        return lzma.LZMACompressor(lzma.FORMAT_XZ, preset=compresslevel)
     elif compress_type == ZIP_ZSTANDARD:
         if compresslevel is None:
             compresslevel = 3
@@ -903,7 +873,7 @@ def _get_decompressor(compress_type):
     elif compress_type == ZIP_LZMA:
         return LZMADecompressor()
     elif compress_type == ZIP_XZ:
-        return XZDecompressor()
+        return lzma.LZMADecompressor(lzma.FORMAT_XZ)
     elif compress_type == ZIP_ZSTANDARD:
         return zstandard.ZstdDecompressor().decompressobj()
     elif compress_type == ZIP_PPMD:
