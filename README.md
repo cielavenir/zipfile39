@@ -1,3 +1,5 @@
+[![PyPI](https://img.shields.io/pypi/v/zipfile39)](https://pypi.org/project/zipfile39/)
+
 ## zipfile39
 
 - Backport of zipfile Python 3.9 (especially caae717) to older Python including **Python 2.7.**
