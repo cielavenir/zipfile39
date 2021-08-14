@@ -16,11 +16,9 @@
     - backports.lzma (Python2 only)
     - zstandard
     - isal
-        - Python2 need https://github.com/cielavenir/python-isal-py2/releases/tag/v0.11.0-py2
-    - pyppmd_zip
-        - experimental; need zipfile39_compatible2 branch for now
-            - I changed the package name to avoid confusion.
-        - Python2 need https://github.com/cielavenir/pyppmd/releases/tag/v0.15.2.3 (or `setup.py bdist_wheel` locally)
-        - Python3 can do `python3 -m pip install git+https://github.com/cielavenir/pyppmd@zipfile39_compatible2`
+        - Python2 need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2`
+            - macOS need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2_mac`
+    - pyppmd
+        - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd@py2`
 - Optional requisites (only available for Python3):
     - zipfile_deflate64
