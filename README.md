@@ -3,6 +3,7 @@
 ## zipfile39
 
 - Backport of zipfile Python 3.9 (especially caae717) to older Python including **Python 2.7.**
+    - This means Python 2.7 can use `zf.open(name, 'w')`.
 - Uses backports.lzma for ZIP_LZMA (method 14) Python2 handler.
 - Introduces ZIP_DEFLATED64 (method 9), ZIP_ZSTANDARD(method 93), ZIP_XZ (method 95) and ZIP_PPMD (method 98) handlers.
     - ZIP_ZSTANDARD Python2 uses zstandard 0.14.1 (the last compatible version).
