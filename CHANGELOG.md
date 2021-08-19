@@ -1,3 +1,7 @@
+## 0.0.2.1
+
+- fixed a typo in ppmd handler
+
 ## 0.0.2
 
 - simplified xz handler
