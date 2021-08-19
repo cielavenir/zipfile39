@@ -1,4 +1,5 @@
-# this test use additional archive integrity test 
+# note: this test use additional archive integrity test using 7z #
+# note: this test requires all additional dependencies (backports.lzma / zstandard / pyppmd / zipfile_deflate64) #
 
 import os
 import sys
@@ -53,7 +54,10 @@ def test_zipfile_writeread(fname,method,level):
         sha256 = hashlib.sha256(body).hexdigest()
     
     with TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', compression=method) as zip:
+        kwargs = {'compression': method}
+        if 'compresslevel' in signature(zipfile._get_compressor).parameters:
+            kwargs['compresslevel'] = level
+        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
             zip.write(fname)
         if avail7z[method]:
             subprocess.check_call(['7z', 't', os.path.join(tmpdir, 'test.zip')], shell=False)
@@ -72,7 +76,10 @@ def test_zipfile_open(fname,method,level):
         sha256 = hashlib.sha256(body).hexdigest()
     
     with TemporaryDirectory() as tmpdir:
-        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', compression=method) as zip:
+        kwargs = {'compression': method}
+        if 'compresslevel' in signature(zipfile._get_compressor).parameters:
+            kwargs['compresslevel'] = level
+        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
             with zip.open(fname, 'w') as zf:
                 zf.write(body)
         if avail7z[method]:
