@@ -742,7 +742,7 @@ class PPMDCompressor(object):
     def compress(self, data):
         if self._comp is None:
             return self._init() + self._comp.encode(data)
-        return self._comp.compress(data)
+        return self._comp.encode(data)
 
     def flush(self):
         if self._comp is None:
