@@ -73,8 +73,8 @@ def test_zipfile_writeread(fname,method,level):
             info = zip.getinfo(fname)
             assert info.compress_type == method
             dec = zip.read(info)
-            len(dec) == st.st_size
-            hashlib.sha256(dec).hexdigest() == sha256
+            assert len(dec) == st.st_size
+            assert hashlib.sha256(dec).hexdigest() == sha256
 
 @pytest.mark.parametrize('fname,method,level',[
     tuple([fname]+list(method)) for fname, method in itertools.product(fnames, methods)
@@ -99,8 +99,8 @@ def test_zipfile_open(fname,method,level):
             assert info.compress_type == method
             with zip.open(info, 'r') as zf:
                 dec = zf.read()
-            len(dec) == st.st_size
-            hashlib.sha256(dec).hexdigest() == sha256
+            assert len(dec) == st.st_size
+            assert hashlib.sha256(dec).hexdigest() == sha256
 
 @pytest.mark.parametrize('fname,level',[
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
@@ -120,5 +120,5 @@ def test_zipfile_read_deflate64(fname,level):
             assert info.compress_type == 9
             with zip.open(info, 'r') as zf:
                 dec = zf.read()
-            len(dec) == st.st_size
-            hashlib.sha256(dec).hexdigest() == sha256
+            assert len(dec) == st.st_size
+            assert hashlib.sha256(dec).hexdigest() == sha256
