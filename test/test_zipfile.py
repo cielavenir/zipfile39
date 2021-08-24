@@ -80,7 +80,10 @@ def test_zipfile_writeread(fname,method,level):
     tuple([fname]+list(method)) for fname, method in itertools.product(fnames, methods)
 ])
 def test_zipfile_open(fname,method,level):
+    chunksiz = 512
     st = os.stat(fname)
+    cnt = (st.st_size+chunksiz-1)//chunksiz
+
     with open(fname, 'rb') as f:
         body = f.read()
         sha256 = hashlib.sha256(body).hexdigest()
@@ -91,16 +94,25 @@ def test_zipfile_open(fname,method,level):
             kwargs['compresslevel'] = level
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
             with zip.open(fname, 'w') as zf:
-                zf.write(body)
+                for i in range(cnt):
+                    zf.write(body[chunksiz*i:chunksiz*(i+1)])
         if avail7z[method]:
             subprocess.check_call(['7z', 't', os.path.join(tmpdir, 'test.zip')], shell=False)
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'r') as zip:
             info = zip.getinfo(fname)
             assert info.compress_type == method
+            decsiz = 0
+            hashobj = hashlib.sha256()
             with zip.open(info, 'r') as zf:
-                dec = zf.read()
-            assert len(dec) == st.st_size
-            assert hashlib.sha256(dec).hexdigest() == sha256
+                while True:
+                    dec0 = zf.read(chunksiz)
+                    decsiz += len(dec0)
+                    hashobj.update(dec0)
+                    if len(dec0) < chunksiz:
+                        break
+                    assert len(dec0) == chunksiz
+            assert decsiz == st.st_size
+            assert hashobj.hexdigest() == sha256
 
 @pytest.mark.parametrize('fname,level',[
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
@@ -108,6 +120,7 @@ def test_zipfile_open(fname,method,level):
 def test_zipfile_read_deflate64(fname,level):
     if sys.version_info[0]<3:
         pytest.skip('py2 does not support deflate64')
+    chunksiz = 1000000
     st = os.stat(fname)
     with open(fname, 'rb') as f:
         body = f.read()
@@ -118,7 +131,15 @@ def test_zipfile_read_deflate64(fname,level):
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'r') as zip:
             info = zip.getinfo(fname)
             assert info.compress_type == 9
+            decsiz = 0
+            hashobj = hashlib.sha256()
             with zip.open(info, 'r') as zf:
-                dec = zf.read()
-            assert len(dec) == st.st_size
-            assert hashlib.sha256(dec).hexdigest() == sha256
+                while True:
+                    dec0 = zf.read(chunksiz)
+                    decsiz += len(dec0)
+                    hashobj.update(dec0)
+                    if len(dec0) < chunksiz:
+                        break
+                    assert len(dec0) == chunksiz
+            assert decsiz == st.st_size
+            assert hashobj.hexdigest() == sha256
