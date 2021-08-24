@@ -5,6 +5,7 @@ import os
 import sys
 import hashlib
 import subprocess
+import itertools
 import pytest
 try:
     from tempfile import TemporaryDirectory
@@ -32,21 +33,28 @@ avail7z = {
     zipfile.ZIP_PPMD:      b'    30401 PPMD'    in info7z,
 }
 
-params = [
-    ('data/10000SalesRecords.csv', zipfile.ZIP_STORED, 0),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_DEFLATED, 6),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_BZIP2, 9),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_LZMA, 6),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_ZSTANDARD, 3),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_XZ, 6),
-    ('data/10000SalesRecords.csv', zipfile.ZIP_PPMD, 5),
+fnames = [
+    'data/10000SalesRecords.csv',
+    # 'data/7zz',
+]
+
+methods = [
+    (zipfile.ZIP_STORED, 0),
+    (zipfile.ZIP_DEFLATED, 6),
+    (zipfile.ZIP_BZIP2, 9),
+    (zipfile.ZIP_LZMA, 6),
+    (zipfile.ZIP_ZSTANDARD, 3),
+    (zipfile.ZIP_XZ, 6),
+    (zipfile.ZIP_PPMD, 5),
 ]
 if 'compresslevel' in signature(zipfile._get_compressor).parameters:
-    params.extend([
-        ('data/10000SalesRecords.csv', zipfile.ZIP_DEFLATED, -2),
+    methods.extend([
+        (zipfile.ZIP_DEFLATED, -2),
     ])
 
-@pytest.mark.parametrize('fname,method,level',params)
+@pytest.mark.parametrize('fname,method,level',[
+    tuple([fname]+list(method)) for fname, method in itertools.product(fnames, methods)
+])
 def test_zipfile_writeread(fname,method,level):
     st = os.stat(fname)
     with open(fname, 'rb') as f:
@@ -68,7 +76,9 @@ def test_zipfile_writeread(fname,method,level):
             len(dec) == st.st_size
             hashlib.sha256(dec).hexdigest() == sha256
 
-@pytest.mark.parametrize('fname,method,level',params)
+@pytest.mark.parametrize('fname,method,level',[
+    tuple([fname]+list(method)) for fname, method in itertools.product(fnames, methods)
+])
 def test_zipfile_open(fname,method,level):
     st = os.stat(fname)
     with open(fname, 'rb') as f:
@@ -92,8 +102,10 @@ def test_zipfile_open(fname,method,level):
             len(dec) == st.st_size
             hashlib.sha256(dec).hexdigest() == sha256
 
-@pytest.mark.parametrize('fname',['data/10000SalesRecords.csv'])
-def test_zipfile_read_deflate64(fname):
+@pytest.mark.parametrize('fname,level',[
+    e for e in itertools.product(fnames, [5])  # list(range(1,10)))
+])
+def test_zipfile_read_deflate64(fname,level):
     if sys.version_info[0]<3:
         pytest.skip('py2 does not support deflate64')
     st = os.stat(fname)
@@ -102,7 +114,7 @@ def test_zipfile_read_deflate64(fname):
         sha256 = hashlib.sha256(body).hexdigest()
     
     with TemporaryDirectory() as tmpdir:
-        subprocess.check_call(['7z', 'a', '-tzip', '-mm=Deflate64', os.path.join(tmpdir, 'test.zip'), fname], shell=False)
+        subprocess.check_call(['7z', 'a', '-tzip', '-mm=Deflate64', '-mx=%d'%level, os.path.join(tmpdir, 'test.zip'), fname], shell=False)
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'r') as zip:
             info = zip.getinfo(fname)
             assert info.compress_type == 9
