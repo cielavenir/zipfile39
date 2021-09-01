@@ -1,3 +1,8 @@
+## 0.0.3
+
+- add slz support
+- changed compresslevel scheme
+
 ## 0.0.2.1
 
 - fixed a typo in ppmd handler

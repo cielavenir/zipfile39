@@ -51,6 +51,11 @@ except ImportError:
     isal_zlib = None
 
 try:
+    import slz
+except ImportError:
+    slz = None
+
+try:
     import bz2 # We may need its compression method
 except ImportError:
     bz2 = None
@@ -833,9 +838,12 @@ def _check_compression(compression):
 def _get_compressor(compress_type, compresslevel=None):
     if compress_type == ZIP_DEFLATED:
         if compresslevel is not None:
-            if compresslevel<0:
+            if compresslevel < -20:
+                assert slz is not None
+                return slz.compressobj()
+            if compresslevel <= -10:
                 assert isal_zlib is not None
-                return isal_zlib.compressobj(-compresslevel, isal_zlib.DEFLATED, -15, 9)
+                return isal_zlib.compressobj(-(compresslevel+10), isal_zlib.DEFLATED, -15, 9)
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
     # elif compress_type == ZIP_DEFLATED64:  # compression unimplemented
