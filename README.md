@@ -10,18 +10,21 @@
     - Due to bindings availability, DEFLATED64 is Python3 only.
 - If isal is installed:
     - crc32 and inflation are accelerated automatically.
-    - compresslevel -1, -2 and -3 are available, which correspond to isal compression level 1, 2 and 3.
+    - ZIP_DEFLATED compresslevel -10, -11, -12 and -13 are available, which correspond to isal compression level 0, 1, 2 and 3.
+- If slz is installed:
+    - ZIP_DEFLATED compresslevel -21 is available.
 
 - Installation requisites:
-    - pathlib2 (Python2 only)
-    - contextlib2 (Python2 only)
+    - [pathlib2](https://pypi.org/project/pathlib2/) (Python2 only)
+    - [contextlib2](https://pypi.org/project/contextlib2/) (Python2 only)
 - Optional requisites:
-    - backports.lzma (Python2 only)
-    - zstandard
-    - isal
+    - [backports.lzma](https://pypi.org/project/backports.lzma/) (Python2 only)
+    - [zstandard](https://pypi.org/project/zstandard/)
+    - [isal](https://pypi.org/project/isal/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2`
             - macOS need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2_mac`
-    - pyppmd
+    - [slz](https://pypi.org/project/slz/)
+    - [pyppmd](https://pypi.org/project/pyppmd/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd@py2`
 - Optional requisites (only available for Python3):
-    - zipfile_deflate64
+    - [zipfile_deflate64](https://pypi.org/project/zipfile_deflate64/)
