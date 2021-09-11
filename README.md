@@ -22,9 +22,11 @@
     - [zstandard](https://pypi.org/project/zstandard/)
     - [isal](https://pypi.org/project/isal/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2`
-            - macOS need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2_mac`
+            - (now this branch support macOS as well)
+        - Also see https://github.com/cielavenir/python-isal-py2/releases/tag/v0.11.1-py2
     - [slz](https://pypi.org/project/slz/)
     - [pyppmd](https://pypi.org/project/pyppmd/)
-        - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd@py2`
+        - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2`
+        - Also see https://github.com/cielavenir/pyppmd-py2/releases/tag/v0.16.1.1
 - Optional requisites (only available for Python3):
     - [zipfile_deflate64](https://pypi.org/project/zipfile_deflate64/)
