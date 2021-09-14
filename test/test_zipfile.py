@@ -120,9 +120,9 @@ def test_zipfile_open(fname,method,level):
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
 ])
 def test_zipfile_read_deflate64(fname,level):
-    if sys.version_info[0]<3:
-        pytest.skip('py2 does not support deflate64')
-    chunksiz = 1000000
+    #if sys.version_info[0]<3:
+    #    pytest.skip('py2 does not support deflate64')
+    chunksiz = 512
     st = os.stat(fname)
     with open(fname, 'rb') as f:
         body = f.read()
