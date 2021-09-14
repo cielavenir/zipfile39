@@ -34,6 +34,7 @@
         - Due to buffering problem, both Python2 and Python3 should use `python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2`
         - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.1.6.1
             - For Python3, discussion is ongoing at https://github.com/brianhelba/zipfile-deflate64/pull/18
+        - But also note that resumable infback9 implementation (to address buffering problem) is experimental~
 
 ### Blast
 
