@@ -5,7 +5,7 @@
 - Backport of zipfile Python 3.9 (especially caae717) to older Python including **Python 2.7.**
     - This means Python 2.7 can use `zf.open(name, 'w')`.
 - Uses backports.lzma for ZIP_LZMA (method 14) Python2 handler.
-- Introduces ZIP_DEFLATED64 (method 9), ZIP_ZSTANDARD(method 93), ZIP_XZ (method 95) and ZIP_PPMD (method 98) handlers.
+- Introduces ZIP_DEFLATED64 (method 9), ZIP_DCLIMPLODED (method 10), ZIP_ZSTANDARD(method 93), ZIP_XZ (method 95) and ZIP_PPMD (method 98) handlers.
     - ZIP_ZSTANDARD Python2 uses zstandard 0.14.1 (the last compatible version).
     - isal / pyppmd / zipfile_deflate64 Python2 use my own backport.
 - If isal is installed:
@@ -21,6 +21,7 @@
     - [contextlib2](https://pypi.org/project/contextlib2/) (Python2 only)
 - Optional requisites:
     - [backports.lzma](https://pypi.org/project/backports.lzma/) (Python2 only)
+    - [dclimplode](https://pypi.org/project/dclimplode/)
     - [zstandard](https://pypi.org/project/zstandard/)
     - [isal](https://pypi.org/project/isal/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2`
@@ -35,7 +36,3 @@
         - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.1.6.1
             - For Python3, discussion is ongoing at https://github.com/brianhelba/zipfile-deflate64/pull/18
         - But also note that resumable infback9 implementation (to address buffering problem) is experimental~
-
-### Blast
-
-- Supporting ZIP_DCLIMPLODED (method 10) was planned but unlike infback9 making `blast()` resumable is very difficult. Also there are no open implementations for compression.
