@@ -846,7 +846,9 @@ def _get_compressor(compress_type, compresslevel=None):
                 return isal_zlib.compressobj(-(compresslevel+10), isal_zlib.DEFLATED, -15, 9)
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
-    # elif compress_type == ZIP_DEFLATED64:  # compression unimplemented
+    elif compress_type == ZIP_DEFLATED64:
+        # compression unimplemented
+        return None
     elif compress_type == ZIP_BZIP2:
         if compresslevel is not None:
             return bz2.BZ2Compressor(compresslevel)
@@ -1804,7 +1806,8 @@ class ZipFile(object):
         if path is None:
             path = os.getcwd()
         else:
-            path = os.fspath(path)
+            if sys.version_info[0]>=3:
+                path = os.fspath(path)
 
         return self._extract_member(member, path, pwd)
 
@@ -1820,7 +1823,8 @@ class ZipFile(object):
         if path is None:
             path = os.getcwd()
         else:
-            path = os.fspath(path)
+            if sys.version_info[0]>=3:
+                path = os.fspath(path)
 
         for zipinfo in members:
             self._extract_member(zipinfo, path, pwd)
@@ -2146,7 +2150,8 @@ class PyZipFile(ZipFile):
         If filterfunc(pathname) is given, it is called with every argument.
         When it is False, the file or directory is skipped.
         """
-        pathname = os.fspath(pathname)
+        if sys.version_info[0]>=3:
+            pathname = os.fspath(pathname)
         if filterfunc and not filterfunc(pathname):
             if self.debug:
                 label = 'path' if os.path.isdir(pathname) else 'file'

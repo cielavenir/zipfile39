@@ -1,3 +1,7 @@
+## 0.0.3.1
+
+- Fixed extracting to file was not working on Python2
+
 ## 0.0.3
 
 - add slz support
