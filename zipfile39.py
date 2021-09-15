@@ -83,6 +83,11 @@ try:
 except ImportError:
     pyppmd = None
 
+try:
+    import dclimplode # We may need its compression method
+except ImportError:
+    dclimplode = None
+
 def filterfalse(predicate, iterable):
     # filterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
     if predicate is None:
@@ -98,7 +103,8 @@ if sys.version_info[0]>=3:
     basestring = str
 
 __all__ = ["BadZipFile", "BadZipfile", "error",
-           "ZIP_STORED", "ZIP_DEFLATED", "ZIP_BZIP2", "ZIP_LZMA",
+           "ZIP_STORED", "ZIP_DEFLATED", "ZIP_DEFLATED64", "ZIP_DCLIMPLODED",
+           "ZIP_BZIP2", "ZIP_LZMA",
            "ZIP_ZSTANDARD", "ZIP_XZ", "ZIP_PPMD",
            "is_zipfile", "ZipInfo", "ZipFile", "PyZipFile", "LargeZipFile",
            "Path"]
@@ -123,6 +129,7 @@ ZIP_MAX_COMMENT = (1 << 16) - 1
 ZIP_STORED = 0
 ZIP_DEFLATED = 8
 ZIP_DEFLATED64 = 9
+ZIP_DCLIMPLODED = 10
 ZIP_BZIP2 = 12
 ZIP_LZMA = 14
 ZIP_ZSTANDARD = 93
@@ -132,6 +139,7 @@ ZIP_PPMD = 98
 
 DEFAULT_VERSION = 20
 ZIP64_VERSION = 45
+DCLIMPLODE_VERSION = 25
 BZIP2_VERSION = 46
 LZMA_VERSION = 63
 ZSTANDARD_VERSION = 63
@@ -815,6 +823,10 @@ def _check_compression(compression):
         if not deflate64:
             raise RuntimeError(
                 "Compression requires the (missing) deflate64 module")
+    elif compression == ZIP_DCLIMPLODED:
+        if not dclimplode:
+            raise RuntimeError(
+                "Compression requires the (missing) dclimplode module")
     elif compression == ZIP_BZIP2:
         if not bz2:
             raise RuntimeError(
@@ -849,6 +861,12 @@ def _get_compressor(compress_type, compresslevel=None):
     elif compress_type == ZIP_DEFLATED64:
         # compression unimplemented
         return None
+    elif compress_type == ZIP_DCLIMPLODED:
+        if compresslevel is None:
+            compresslevel = 3
+        compressmethod = compresslevel//10
+        compresslevel = compresslevel%10
+        return dclimplode.compressobj(compressmethod, 1<<(9+compresslevel))
     elif compress_type == ZIP_BZIP2:
         if compresslevel is not None:
             return bz2.BZ2Compressor(compresslevel)
@@ -878,6 +896,8 @@ def _get_decompressor(compress_type):
         return zlib.decompressobj(-15)
     elif compress_type == ZIP_DEFLATED64:
         return deflate64.Deflate64()
+    elif compress_type == ZIP_DCLIMPLODED:
+        return dclimplode.decompressobj()
     elif compress_type == ZIP_BZIP2:
         return bz2.BZ2Decompressor()
     elif compress_type == ZIP_LZMA:
@@ -2660,6 +2680,8 @@ def main(args=None):
         smethod = args.method.upper()
         if smethod == 'DEFLATE':
             smethod = 'DEFLATED'
+        if smethod == 'DCLIMPLODE':
+            smethod = 'DCLIMPLODED'
         if smethod == 'STORE':
             smethod = 'STORED'
         method = globals()['ZIP_'+smethod]

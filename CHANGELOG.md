@@ -1,3 +1,7 @@
+## 0.0.4
+
+- Added dclimplode support
+
 ## 0.0.3.1
 
 - Fixed extracting to file was not working on Python2
