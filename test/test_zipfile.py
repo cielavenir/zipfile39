@@ -26,6 +26,7 @@ info7z  = subprocess.check_output(['7z', 'i'])
 avail7z = {
     zipfile.ZIP_STORED:    True,
     zipfile.ZIP_DEFLATED:  b'    40108 Deflate' in info7z,
+    zipfile.ZIP_DCLIMPLODED: False,
     zipfile.ZIP_BZIP2:     b'    40202 BZip2'   in info7z,
     zipfile.ZIP_LZMA:      b'    30101 LZMA'    in info7z,
     zipfile.ZIP_ZSTANDARD: b'  4F71101 ZSTD'    in info7z,
@@ -41,6 +42,8 @@ fnames = [
 methods = [
     (zipfile.ZIP_STORED, 0),
     (zipfile.ZIP_DEFLATED, 6),
+    (zipfile.ZIP_DCLIMPLODED, 3),
+    (zipfile.ZIP_DCLIMPLODED, 13),
     (zipfile.ZIP_BZIP2, 9),
     (zipfile.ZIP_LZMA, 6),
     (zipfile.ZIP_ZSTANDARD, 3),
