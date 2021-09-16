@@ -1,3 +1,7 @@
+## 0.0.4.1
+
+- Fixed dclimplode version header
+
 ## 0.0.4
 
 - Added dclimplode support

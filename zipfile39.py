@@ -103,7 +103,7 @@ if sys.version_info[0]>=3:
     basestring = str
 
 __all__ = ["BadZipFile", "BadZipfile", "error",
-           "ZIP_STORED", "ZIP_DEFLATED", "ZIP_DEFLATED64", "ZIP_DCLIMPLODED",
+           "ZIP_STORED", "ZIP_DEFLATED", "ZIP_DEFLATED64", "ZIP_DCLIMPLODED", "ZIP_PKIMPLODED",
            "ZIP_BZIP2", "ZIP_LZMA",
            "ZIP_ZSTANDARD", "ZIP_XZ", "ZIP_PPMD",
            "is_zipfile", "ZipInfo", "ZipFile", "PyZipFile", "LargeZipFile",
@@ -130,6 +130,7 @@ ZIP_STORED = 0
 ZIP_DEFLATED = 8
 ZIP_DEFLATED64 = 9
 ZIP_DCLIMPLODED = 10
+ZIP_PKIMPLODED = 10
 ZIP_BZIP2 = 12
 ZIP_LZMA = 14
 ZIP_ZSTANDARD = 93
@@ -139,7 +140,7 @@ ZIP_PPMD = 98
 
 DEFAULT_VERSION = 20
 ZIP64_VERSION = 45
-DCLIMPLODE_VERSION = 25
+DCLIMPLODED_VERSION = 25
 BZIP2_VERSION = 46
 LZMA_VERSION = 63
 ZSTANDARD_VERSION = 63
@@ -514,7 +515,9 @@ class ZipInfo (object):
             compress_size = 0xffffffff
             min_version = ZIP64_VERSION
 
-        if self.compress_type == ZIP_BZIP2:
+        if self.compress_type == ZIP_DCLIMPLODED:
+            min_version = max(DCLIMPLODED_VERSION, min_version)
+        elif self.compress_type == ZIP_BZIP2:
             min_version = max(BZIP2_VERSION, min_version)
         elif self.compress_type == ZIP_LZMA:
             min_version = max(LZMA_VERSION, min_version)
