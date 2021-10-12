@@ -36,3 +36,7 @@
         - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.1.6.1
             - For Python3, discussion is ongoing at https://github.com/brianhelba/zipfile-deflate64/pull/18
         - But also note that resumable infback9 implementation (to address buffering problem) is experimental~
+
+### Legal
+
+- I'm not sure about the license term when pyppmd is loaded (I'm not lawyer though).
