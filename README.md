@@ -30,7 +30,7 @@
     - [slz](https://pypi.org/project/slz/)
     - [pyppmd](https://pypi.org/project/pyppmd/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2`
-        - Also see https://github.com/cielavenir/pyppmd-py2/releases/tag/v0.16.1.1
+        - Also see https://github.com/cielavenir/pyppmd-py2/releases/tag/v0.17.0.1
     - [zipfile_deflate64](https://pypi.org/project/zipfile_deflate64/)
         - Due to buffering problem, both Python2 and Python3 should use `python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2`
         - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.1.6.1
