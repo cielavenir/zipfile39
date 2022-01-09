@@ -21,6 +21,8 @@ sys.path.insert(0, os.path.join(mydir,'..'))
 os.chdir(mydir)
 
 import zipfile39 as zipfile
+import dclimplode
+#dclimplode.decompressobj = dclimplode.decompressobj_pklib
 
 info7z  = subprocess.check_output(['7z', 'i'])
 avail7z = {

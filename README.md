@@ -40,3 +40,4 @@
 ### Legal
 
 - I'm not sure about the license term when pyppmd is loaded (I'm not lawyer though).
+    - Note that PPMd code itself is public domain. See https://github.com/miurahr/pyppmd/issues/5#issuecomment-892280467 for detail.
