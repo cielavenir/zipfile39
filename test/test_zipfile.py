@@ -26,14 +26,15 @@ import dclimplode
 
 info7z  = subprocess.check_output(['7z', 'i'])
 avail7z = {
-    zipfile.ZIP_STORED:      True,
-    zipfile.ZIP_DEFLATED:    b'    40108 Deflate'   in info7z,
-    zipfile.ZIP_DCLIMPLODED: b'    4010A PKImplode' in info7z,
-    zipfile.ZIP_BZIP2:       b'    40202 BZip2'     in info7z,
-    zipfile.ZIP_LZMA:        b'    30101 LZMA'      in info7z,
-    zipfile.ZIP_ZSTANDARD:   b'  4F71101 ZSTD'      in info7z,
-    zipfile.ZIP_XZ:          b'       21 LZMA2'     in info7z,
-    zipfile.ZIP_PPMD:        b'    30401 PPMD'      in info7z,
+    zipfile.ZIP_STORED:      True,                              # method 0
+    zipfile.ZIP_DEFLATED:    b'    40108 Deflate'   in info7z,  # method 8
+    zipfile.ZIP_DEFLATED64:  b'    40109 Deflate64' in info7z,  # method 9
+    zipfile.ZIP_DCLIMPLODED: b'    4010A PKImplode' in info7z,  # method 10
+    zipfile.ZIP_BZIP2:       b'    40202 BZip2'     in info7z,  # method 12
+    zipfile.ZIP_LZMA:        b'    30101 LZMA'      in info7z,  # method 14
+    zipfile.ZIP_ZSTANDARD:   b'  4F71101 ZSTD'      in info7z,  # method 93
+    zipfile.ZIP_XZ:          b'       21 LZMA2'     in info7z,  # method 95
+    zipfile.ZIP_PPMD:        b'    30401 PPMD'      in info7z,  # method 98
 }
 
 fnames = [
