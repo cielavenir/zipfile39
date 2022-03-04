@@ -13,6 +13,8 @@
     - ZIP_DEFLATED compresslevel -10, -11, -12 and -13 are available, which correspond to isal compression level 0, 1, 2 and 3.
 - If slz is installed:
     - ZIP_DEFLATED compresslevel -21 is available.
+- If codecs7z is installed:
+    - ZIP_DEFLATED compresslevel 11 - 19 are available. Enjoy ultimate compression on Python.
 
 ### Requisites
 
@@ -28,6 +30,7 @@
             - (now this branch support macOS as well)
         - Also see https://github.com/cielavenir/python-isal-py2/releases/tag/v0.11.1-py2
     - [slz](https://pypi.org/project/slz/)
+    - [codecs7z](https://pypi.org/project/codecs7z/)
     - [pyppmd](https://pypi.org/project/pyppmd/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2`
         - Also see https://github.com/cielavenir/pyppmd-py2/releases/tag/v0.17.0.1
@@ -39,5 +42,5 @@
 
 ### Legal
 
-- I'm not sure about the license term when pyppmd is loaded (I'm not lawyer though).
+- I'm not sure about the license term when pyppmd / codecs7z is loaded (I'm not lawyer though).
     - Note that PPMd code itself is public domain. See https://github.com/miurahr/pyppmd/issues/5#issuecomment-892280467 for detail.
