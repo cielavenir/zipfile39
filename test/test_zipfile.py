@@ -45,6 +45,7 @@ fnames = [
 methods = [
     (zipfile.ZIP_STORED, 0),
     (zipfile.ZIP_DEFLATED, 6),
+    (zipfile.ZIP_DEFLATED64, 6),
     (zipfile.ZIP_DCLIMPLODED, 3),
     (zipfile.ZIP_DCLIMPLODED, 13),
     (zipfile.ZIP_BZIP2, 9),
@@ -55,6 +56,7 @@ methods = [
 ]
 if 'compresslevel' in signature(zipfile._get_compressor).parameters:
     methods.extend([
+        (zipfile.ZIP_DEFLATED, 19),
         (zipfile.ZIP_DEFLATED, -10),
         (zipfile.ZIP_DEFLATED, -12),
         (zipfile.ZIP_DEFLATED, -21),

@@ -88,6 +88,11 @@ try:
 except ImportError:
     dclimplode = None
 
+try:
+    import codecs7z # We may need its compression method
+except ImportError:
+    codecs7z = None
+
 def filterfalse(predicate, iterable):
     # filterfalse(lambda x: x%2, range(10)) --> 0 2 4 6 8
     if predicate is None:
@@ -140,6 +145,7 @@ ZIP_PPMD = 98
 
 DEFAULT_VERSION = 20
 ZIP64_VERSION = 45
+DEFLATED64_VERSION = 21
 DCLIMPLODED_VERSION = 25
 BZIP2_VERSION = 46
 LZMA_VERSION = 63
@@ -517,6 +523,8 @@ class ZipInfo (object):
 
         if self.compress_type == ZIP_DCLIMPLODED:
             min_version = max(DCLIMPLODED_VERSION, min_version)
+        if self.compress_type == ZIP_DEFLATED64:
+            min_version = max(DEFLATED64_VERSION, min_version)
         elif self.compress_type == ZIP_BZIP2:
             min_version = max(BZIP2_VERSION, min_version)
         elif self.compress_type == ZIP_LZMA:
@@ -859,11 +867,14 @@ def _get_compressor(compress_type, compresslevel=None):
             if compresslevel <= -10:
                 assert isal_zlib is not None
                 return isal_zlib.compressobj(-(compresslevel+10), isal_zlib.DEFLATED, -15, 9)
+            if compresslevel >= 10:
+                assert codecs7z is not None
+                return codecs7z.deflate_compressobj(compresslevel-10)
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
     elif compress_type == ZIP_DEFLATED64:
-        # compression unimplemented
-        return None
+        assert codecs7z is not None
+        return codecs7z.deflate64_compressobj(compresslevel)
     elif compress_type == ZIP_DCLIMPLODED:
         if compresslevel is None:
             compresslevel = 3
