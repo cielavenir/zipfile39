@@ -1,3 +1,7 @@
+## 0.0.5.0
+
+- Added deflate64 compression support
+
 ## 0.0.4.2
 
 - Fixed pyppmd 0.17.0 compatibility
