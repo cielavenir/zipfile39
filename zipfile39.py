@@ -873,10 +873,10 @@ def _get_compressor(compress_type, compresslevel=None):
             return zlib.compressobj(compresslevel, zlib.DEFLATED, -15)
         return zlib.compressobj(zlib.Z_DEFAULT_COMPRESSION, zlib.DEFLATED, -15)
     elif compress_type == ZIP_DEFLATED64:
-		if compresslevel >= 10:
-			# reserved compress level even after "true deflate64 module" is out
-			assert codecs7z is not None
-			return codecs7z.deflate64_compressobj(compresslevel-10)
+        if compresslevel >= 10:
+            # reserved compress level even after "true deflate64 module" is out
+            assert codecs7z is not None
+            return codecs7z.deflate64_compressobj(compresslevel-10)
         assert codecs7z is not None
         return codecs7z.deflate64_compressobj(compresslevel)
     elif compress_type == ZIP_DCLIMPLODED:

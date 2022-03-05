@@ -60,6 +60,7 @@ if 'compresslevel' in signature(zipfile._get_compressor).parameters:
         (zipfile.ZIP_DEFLATED, -10),
         (zipfile.ZIP_DEFLATED, -12),
         (zipfile.ZIP_DEFLATED, -21),
+        (zipfile.ZIP_BZIP2, 19),
     ])
 
 @pytest.mark.parametrize('fname,method,level',[
