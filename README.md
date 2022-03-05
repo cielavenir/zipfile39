@@ -14,7 +14,7 @@
 - If slz is installed:
     - ZIP_DEFLATED compresslevel -21 is available.
 - If codecs7z is installed:
-    - ZIP_DEFLATED compresslevel 11 - 19 are available. Enjoy ultimate compression on Python.
+    - ZIP_DEFLATED/ZIP_BZIP2 compresslevel 11 - 19 are available. Enjoy 7-zip's ultimate compression on Python.
 
 ### Requisites
 

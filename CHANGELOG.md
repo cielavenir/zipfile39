@@ -1,3 +1,7 @@
+## 0.0.5.1
+
+- Added bzip2 compress level 11-19
+
 ## 0.0.5.0
 
 - Added deflate64 compression support
