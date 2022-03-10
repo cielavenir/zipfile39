@@ -1,3 +1,7 @@
+## 0.0.5.2
+
+- Fixed Python 3.4/3.5 compatibility
+
 ## 0.0.5.1
 
 - Added bzip2 compress level 11-19
