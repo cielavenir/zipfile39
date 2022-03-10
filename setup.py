@@ -8,13 +8,15 @@ install_requires = [
 extras_require = {
     'all': [
         'backports.lzma; python_version < "3"',
+        'backports.tempfile; python_version < "3"',
+        'funcsigs; python_version < "3"',
         'isal',
         'slz',
-        'zipfile_deflate64',
+        'zipfile_deflate64>=0.2.0',
         'codecs7z',
         'dclimplode',
         'zstandard',
-        'pyppmd',
+        'pyppmd>=0.17.0',
     ],
 }
 

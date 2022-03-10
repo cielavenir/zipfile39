@@ -35,10 +35,13 @@
         - Python2 need `python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2`
         - Also see https://github.com/cielavenir/pyppmd-py2/releases/tag/v0.17.0.1
     - [zipfile_deflate64](https://pypi.org/project/zipfile_deflate64/)
-        - Due to buffering problem, both Python2 and Python3 should use `python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2`
-        - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.1.6.1
-            - For Python3, discussion is ongoing at https://github.com/brianhelba/zipfile-deflate64/pull/18
-        - But also note that resumable infback9 implementation (to address buffering problem) is experimental~
+        - Need 0.2.0 or later.
+        - Python2 need `python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2`
+        - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.2.0.4
+- Test requisites:
+    - All optional requisites
+    - [backports.tempfile](https://pypi.org/project/backports.tempfile/) (Python2 only)
+    - [funcsigs](https://pypi.org/project/funcsigs/) (Python2 only)
 
 ### Legal
 
