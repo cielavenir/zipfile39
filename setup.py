@@ -1,10 +1,22 @@
 from setuptools import setup
 
 import sys
-if sys.version_info[0]>=3:
-    install_requires = []
-else:
-    install_requires = ['pathlib2', 'contextlib2']
+install_requires = [
+    'pathlib2; python_version < "3"',
+    'contextlib2; python_version < "3"',
+]
+extras_require = {
+    'all': [
+        'backports.lzma; python_version < "3"',
+        'isal',
+        'slz',
+        'zipfile_deflate64',
+        'codecs7z',
+        'dclimplode',
+        'zstandard',
+        'pyppmd',
+    ],
+}
 
 setup(
     name='zipfile39',
@@ -20,6 +32,7 @@ setup(
     include_package_data=True,
     platforms='any',
     install_requires=install_requires,
+    extras_require=extras_require,
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
