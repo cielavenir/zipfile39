@@ -8,7 +8,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10', 'pypy-3.7']
+        python-version: ['2.7', '3.5', '3.6', '3.7', '3.8', '3.9', '3.10', 'pypy-3.7']
         os: [ubuntu-latest]
 
     steps:
@@ -24,6 +24,14 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Install dependencies for 2.7
+      if: ${{ matrix.python-version == '2.7' }}
+      run: |
+        sudo apt update
+        sudo apt install -y nasm
+        python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
+        python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2
+        python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
@@ -31,7 +39,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install
       run: |
-        pip install '.[all]'
+        python -m pip install '.[all]'
     - name: Test
       run: |
         pytest -v
