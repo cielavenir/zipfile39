@@ -590,7 +590,7 @@ class ZipInfo (object):
         this will be the same as filename, but without a drive letter and with
         leading path separators removed).
         """
-        if sys.version_info[0]>=3:
+        if sys.version_info>=(3,6):
             if isinstance(filename, os.PathLike):
                 filename = os.fspath(filename)
         st = os.stat(filename)
@@ -1460,7 +1460,7 @@ class ZipFile(object):
         self._strict_timestamps = strict_timestamps
 
         # Check if we were passed a file-like object
-        if sys.version_info[0]>=3:
+        if sys.version_info>=(3,6):
             if isinstance(file, os.PathLike):
                 file = os.fspath(file)
         if isinstance(file, basestring):
@@ -1847,7 +1847,7 @@ class ZipFile(object):
         if path is None:
             path = os.getcwd()
         else:
-            if sys.version_info[0]>=3:
+            if sys.version_info>=(3,6):
                 path = os.fspath(path)
 
         return self._extract_member(member, path, pwd)
@@ -1864,7 +1864,7 @@ class ZipFile(object):
         if path is None:
             path = os.getcwd()
         else:
-            if sys.version_info[0]>=3:
+            if sys.version_info>=(3,6):
                 path = os.fspath(path)
 
         for zipinfo in members:
@@ -2191,7 +2191,7 @@ class PyZipFile(ZipFile):
         If filterfunc(pathname) is given, it is called with every argument.
         When it is False, the file or directory is skipped.
         """
-        if sys.version_info[0]>=3:
+        if sys.version_info>=(3,6):
             pathname = os.fspath(pathname)
         if filterfunc and not filterfunc(pathname):
             if self.debug:
