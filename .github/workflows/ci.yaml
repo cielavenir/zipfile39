@@ -53,7 +53,7 @@ jobs:
         sudo apt update
         sudo apt install -y nasm
         python -m pip install cffi
-        python -m pip install git+https://github.com/cielavenir/python-isal-py2@win32
+        python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
     - name: Install isal (Win32)
