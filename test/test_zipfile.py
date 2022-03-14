@@ -44,7 +44,7 @@ fnames = [
 
 methods = [
     (zipfile.ZIP_STORED, 0),
-    (zipfile.ZIP_DEFLATED, 6),
+    #(zipfile.ZIP_DEFLATED, 6),
     (zipfile.ZIP_DEFLATED64, 6),
     (zipfile.ZIP_DCLIMPLODED, 3),
     (zipfile.ZIP_DCLIMPLODED, 13),
