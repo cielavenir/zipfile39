@@ -10,7 +10,7 @@ extras_require = {
         'backports.lzma; python_version < "3"',
         'backports.tempfile; python_version < "3"',
         'funcsigs; python_version < "3"',
-        'isal',
+        #'isal',
         'slz',
         'zipfile_deflate64>=0.2.0',
         'codecs7z',
