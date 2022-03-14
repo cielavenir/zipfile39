@@ -11,7 +11,7 @@ extras_require = {
         'backports.tempfile; python_version < "3"',
         'funcsigs; python_version < "3"',
         #'isal',
-        'slz',
+        #'slz',
         'zipfile_deflate64>=0.2.0',
         'codecs7z',
         'dclimplode',
