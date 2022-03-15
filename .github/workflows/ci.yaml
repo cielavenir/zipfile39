@@ -62,12 +62,12 @@ jobs:
       run: |
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip install dist/isal*.whl
-    - name: Upload wheel
-      if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
-      uses: actions/upload-artifact@v2
-      with:
-        name: wheel
-        path: dist
+    # - name: Upload wheel
+    #   if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
+    #   uses: actions/upload-artifact@v2
+    #   with:
+    #     name: wheel
+    #     path: dist
     - name: Patch directory owner (for Pyston)
       if: ${{ matrix.python-version == 'pyston' }}
       run: |
