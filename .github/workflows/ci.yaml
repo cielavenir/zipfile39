@@ -59,15 +59,7 @@ jobs:
     - name: Install isal (Win32)
       if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
       run: |
-        #python -m pip install git+https://github.com/cielavenir/python-isal-py2@win32
-        git clone https://github.com/cielavenir/python-isal-py2
-        git -C python-isal-py2 checkout win32
-        git -C python-isal-py2 submodule init
-        git -C python-isal-py2 submodule update
-        git -C python-isal-py2/src/isal/isa-l remote add ciel https://github.com/cielavenir/isa-l.git
-        git -C python-isal-py2/src/isal/isa-l fetch ciel
-        git -C python-isal-py2/src/isal/isa-l checkout ciel/test
-        python -m pip install python-isal-py2
+        python -m pip install git+https://github.com/cielavenir/python-isal-py2@win32
     - name: Patch directory owner (for Pyston)
       if: ${{ matrix.python-version == 'pyston' }}
       run: |
@@ -83,4 +75,4 @@ jobs:
         python -m pip install '.[all]'
     - name: Test
       run: |
-        pytest -v -s
+        pytest -v
