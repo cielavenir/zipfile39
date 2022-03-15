@@ -83,4 +83,4 @@ jobs:
         python -m pip install '.[all]'
     - name: Test
       run: |
-        pytest -v -s
+        pytest -v -s test
