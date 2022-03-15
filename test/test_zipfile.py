@@ -21,7 +21,9 @@ sys.path.insert(0, os.path.join(mydir,'..'))
 os.chdir(mydir)
 
 import zipfile39 as zipfile
-import dclimplode
+
+#I wanted to test both decompressobj_blast and decompressobj_pklib, but pklib version requires flushing decoder, hence incompatible.
+#import dclimplode
 #dclimplode.decompressobj = dclimplode.decompressobj_pklib
 
 info7z  = subprocess.check_output(['7z', 'i'])
@@ -44,8 +46,8 @@ fnames = [
 
 methods = [
     (zipfile.ZIP_STORED, 0),
-    #(zipfile.ZIP_DEFLATED, 6),
-    #(zipfile.ZIP_DEFLATED64, 6),
+    (zipfile.ZIP_DEFLATED, 6),
+    (zipfile.ZIP_DEFLATED64, 6),
     (zipfile.ZIP_DCLIMPLODED, 3),
     (zipfile.ZIP_DCLIMPLODED, 13),
     (zipfile.ZIP_BZIP2, 9),
@@ -56,11 +58,11 @@ methods = [
 ]
 if 'compresslevel' in signature(zipfile._get_compressor).parameters:
     methods.extend([
-        #(zipfile.ZIP_DEFLATED, 19),
+        (zipfile.ZIP_DEFLATED, 19),
         (zipfile.ZIP_DEFLATED, -10),
-        #(zipfile.ZIP_DEFLATED, -12),
-        #(zipfile.ZIP_DEFLATED, -21),
-        #(zipfile.ZIP_BZIP2, 19),
+        (zipfile.ZIP_DEFLATED, -12),
+        (zipfile.ZIP_DEFLATED, -21),
+        (zipfile.ZIP_BZIP2, 19),
     ])
 
 @pytest.mark.parametrize('fname,method,level',[
