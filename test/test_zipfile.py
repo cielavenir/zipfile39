@@ -21,7 +21,9 @@ sys.path.insert(0, os.path.join(mydir,'..'))
 os.chdir(mydir)
 
 import zipfile39 as zipfile
-import dclimplode
+
+#I wanted to test both decompressobj_blast and decompressobj_pklib, but pklib version requires flushing decoder, hence incompatible.
+#import dclimplode
 #dclimplode.decompressobj = dclimplode.decompressobj_pklib
 
 info7z  = subprocess.check_output(['7z', 'i'])
