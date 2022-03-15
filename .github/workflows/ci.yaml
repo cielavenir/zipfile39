@@ -58,9 +58,9 @@ jobs:
         python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
     - name: Install isal (Win32)
       if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
+      shell: bash
       run: |
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@win32
-        ls dist
         python -m pip install dist/isal*.whl
     - name: Patch directory owner (for Pyston)
       if: ${{ matrix.python-version == 'pyston' }}
