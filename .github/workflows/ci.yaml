@@ -67,7 +67,7 @@ jobs:
         git -C python-isal-py2/src/isal/isa-l remote add ciel https://github.com/cielavenir/isa-l.git
         git -C python-isal-py2/src/isal/isa-l fetch ciel
         git -C python-isal-py2/src/isal/isa-l checkout ciel/test
-        python -m pip install python-isal-py2
+        python -m pip install ./python-isal-py2
     - name: Patch directory owner (for Pyston)
       if: ${{ matrix.python-version == 'pyston' }}
       run: |
