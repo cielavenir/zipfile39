@@ -60,7 +60,7 @@ jobs:
         sudo apt install -y ./pyston.deb
         sudo ln -sf pyston /usr/bin/python
     - name: Install dependencies for 2.7/3.4/3.5
-      if: ${{ matrix.python-version == '2.7' || matrix.python-version == 'pypy-2.7' || matrix.python-version == 'pyston' || matrix.python-version == '3.4' || matrix.python-version == '3.5' }}
+      if: ${{ matrix.os != 'windows-latest' && (matrix.python-version == '2.7' || matrix.python-version == 'pypy-2.7' || matrix.python-version == 'pyston' || matrix.python-version == '3.4' || matrix.python-version == '3.5') }}
       run: |
         sudo apt update
         sudo apt install -y nasm
@@ -69,10 +69,12 @@ jobs:
         python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
     - name: Install isal (Win32)
-      if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
+      if: ${{ matrix.os == 'windows-latest' && (matrix.architecture == 'x86' || matrix.python-version == '2.7' || matrix.python-version == '3.4') }}
       shell: bash
       run: |
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
+        python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
+        python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/zipfile-deflate64@py2
         python -m pip install dist/isal*.whl
     # - name: Upload wheel
     #   if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
