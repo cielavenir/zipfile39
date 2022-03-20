@@ -97,10 +97,10 @@ jobs:
       shell: bash
       run: |
         python -m pip install wheel
-        python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2_win27_temp_willneedgcclink
-        #python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
+        python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
+        python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/zipfile-deflate64@py2
-        python -m pip install dist/isal*.whl
+        python -m pip install dist/*.whl
     # - name: Upload wheel
     #   if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
     #   uses: actions/upload-artifact@v2
