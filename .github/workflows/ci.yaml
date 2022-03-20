@@ -59,6 +59,16 @@ jobs:
         sudo apt update
         sudo apt install -y ./pyston.deb
         sudo ln -sf pyston /usr/bin/python
+    - name: "Install Visual C++ for Python 2.7"
+      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '2.7' }}
+      run: |
+        curl -L -O https://github.com/reider-roque/sulley-win-installer/raw/master/VCForPython27.msi
+        msiexec /i VCForPython27.msi /qn
+    #     choco install vcpython27 -f -y
+    - name: "Install Visual C++ for Python 3.4"
+      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
+      run: |
+        choco install windows-sdk-7.1 -f -y
     - name: Upgrade pip
       if: ${{ matrix.python-version != '2.7' && matrix.python-version != '3.4' }}
       run: |
