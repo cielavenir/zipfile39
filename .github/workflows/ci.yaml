@@ -108,7 +108,7 @@ jobs:
       run: |
         curl -L -O https://tukaani.org/xz/xz-5.2.5-windows.7z
         7z x -oxz xz-5.2.5-windows.7z
-        find -name "*.dll" xz | xargs rm
+        find xz -name "*.dll" | xargs rm
         python -m pip wheel --wheel-dir dist --global-option=build_ext --global-option="-Ixz/include" --global-option="-Lxz/bin_i686-sse2" --global-option --compiler=msvc --global-option --define="LZMA_API_STATIC" backports.lzma
         python -m pip install dist/*.whl
     - name: Install lzma (Win64)
@@ -117,7 +117,7 @@ jobs:
       run: |
         curl -L -O https://tukaani.org/xz/xz-5.2.5-windows.7z
         7z x -oxz xz-5.2.5-windows.7z
-        find -name "*.dll" xz | xargs rm
+        find xz -name "*.dll" | xargs rm
         python -m pip wheel --wheel-dir dist --global-option=build_ext --global-option="-Ixz/include" --global-option="-Lxz/bin_x86-64" --global-option --compiler=msvc --global-option --define="LZMA_API_STATIC" backports.lzma
         python -m pip install dist/*.whl
     # - name: Upload wheel
