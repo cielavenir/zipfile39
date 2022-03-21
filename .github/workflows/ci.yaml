@@ -69,6 +69,7 @@ jobs:
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
         choco install windows-sdk-7.1 -f -y
+        choco install KB2519277 -f -y
     - name: Upgrade pip
       if: ${{ matrix.python-version != '2.7' && matrix.python-version != '3.4' }}
       run: |
@@ -124,12 +125,12 @@ jobs:
         mv xz/bin_x86-64/liblzma.a xz/bin_x86-64/liblzma.lib
         python -m pip wheel --wheel-dir dist --global-option=build_ext --global-option="-I$PWD/xz/include" --global-option="-L$PWD/xz/bin_x86-64" --global-option --compiler=msvc --global-option --define="LZMA_API_STATIC" backports.lzma
         python -m pip install dist/*.whl
-    # - name: Upload wheel
-    #   if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
-    #   uses: actions/upload-artifact@v2
-    #   with:
-    #     name: wheel
-    #     path: dist
+    - name: Upload wheel
+      if: ${{ matrix.os == 'windows-latest' }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: windows_wheel
+        path: dist
     - name: Patch directory owner (for Pyston)
       if: ${{ matrix.python-version == 'pyston' }}
       run: |
