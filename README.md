@@ -43,6 +43,10 @@
     - [backports.tempfile](https://pypi.org/project/backports.tempfile/) (Python2 only)
     - [funcsigs](https://pypi.org/project/funcsigs/) (Python2 only)
 
+### Wheels
+
+Some dependencies need complex build procedures. For your sake those wheels are published in actions CI.
+
 ### Legal
 
 - I'm not sure about the license term when pyppmd / codecs7z is loaded (I'm not lawyer though).
