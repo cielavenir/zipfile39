@@ -116,7 +116,6 @@ jobs:
         # export PATH=$PATH:"C:\Program Files\NASM"
         choco install yasm -f -y
         python -m pip install cffi wheel
-        python -v -c 'import cffi'
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/zipfile-deflate64@py2
