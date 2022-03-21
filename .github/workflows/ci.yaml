@@ -109,13 +109,13 @@ jobs:
         python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
     - name: Install dependencies for 2.7/3.4/3.5 (Win32)
-      if: ${{ matrix.os == 'windows-latest' && (matrix.architecture == 'x86' || matrix.python-version == '2.7' || matrix.python-version == '3.4') }}
+      if: ${{ matrix.os == 'windows-latest' && (matrix.architecture == 'x86' || matrix.python-version == '2.7' || matrix.python-version == '3.4' || matrix.python-version == '3.5') }}
       shell: bash
       run: |
         # choco install nasm -f -y
         # export PATH=$PATH:"C:\Program Files\NASM"
         choco install yasm -f -y
-        python -m pip install wheel
+        python -m pip install cffi wheel
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/zipfile-deflate64@py2
