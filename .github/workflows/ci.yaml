@@ -97,6 +97,7 @@ jobs:
       shell: bash
       run: |
         choco install nasm -f -y
+        export PATH=$PATH:"C:\Program Files\NASM"
         python -m pip install wheel
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
