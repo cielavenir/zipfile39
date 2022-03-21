@@ -92,14 +92,33 @@ jobs:
         python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip install git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2
-    - name: Install isal (Win32)
+    - name: Install dependencies for 2.7/3.4/3.5 (Win32)
       if: ${{ matrix.os == 'windows-latest' && (matrix.architecture == 'x86' || matrix.python-version == '2.7' || matrix.python-version == '3.4') }}
       shell: bash
       run: |
+        choco install nasm -f -y
         python -m pip install wheel
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/pyppmd-py2@py2
         python -m pip wheel --wheel-dir dist git+https://github.com/cielavenir/zipfile-deflate64@py2
+        python -m pip install dist/*.whl
+    - name: Install lzma (Win32)
+      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '2.7' && matrix.architecture == 'x86' }}
+      shell: bash
+      run: |
+        curl -L -O https://tukaani.org/xz/xz-5.2.5-windows.7z
+        7z x -oxz xz-5.2.5-windows.7z
+        find -name "*.dll" xz | xargs rm
+        python -m pip wheel --wheel-dir dist --global-option=build_ext --global-option="-Ixz/include" --global-option="-Lxz/bin_i686-sse2" --global-option --compiler=msvc --global-option --define="LZMA_API_STATIC" backports.lzma
+        python -m pip install dist/*.whl
+    - name: Install lzma (Win64)
+      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '2.7' && matrix.architecture == 'x64' }}
+      shell: bash
+      run: |
+        curl -L -O https://tukaani.org/xz/xz-5.2.5-windows.7z
+        7z x -oxz xz-5.2.5-windows.7z
+        find -name "*.dll" xz | xargs rm
+        python -m pip wheel --wheel-dir dist --global-option=build_ext --global-option="-Ixz/include" --global-option="-Lxz/bin_x86-64" --global-option --compiler=msvc --global-option --define="LZMA_API_STATIC" backports.lzma
         python -m pip install dist/*.whl
     # - name: Upload wheel
     #   if: ${{ matrix.os == 'windows-latest' && matrix.architecture == 'x86' }}
