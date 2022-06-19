@@ -1,3 +1,7 @@
+## 0.0.5.3
+
+- Fixed pypi desc display
+
 ## 0.0.5.2
 
 - Fixed Python 3.4/3.5 compatibility
