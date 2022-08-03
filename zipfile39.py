@@ -74,9 +74,19 @@ except ImportError:
     zstandard = None
 
 try:
+    import pyzstd # We may need its compression method
+except ImportError:
+    pyzstd = None
+
+try:
     from zipfile_deflate64 import deflate64 # We may need its compression method
 except ImportError:
     deflate64 = None
+
+try:
+    import inflate64 # We may need its compression method
+except ImportError:
+    inflate64 = None
 
 try:
     import pyppmd # We may need its compression method
@@ -738,6 +748,29 @@ class LZMADecompressor(object):
         self.eof = self._decomp.eof
         return result
 
+class Inflate64Compressor(object):
+
+    def __init__(self, level=None):
+        # inflate64.Deflater does not have its own level
+        self._comp = inflate64.Deflater()
+
+    def compress(self, data):
+        return self._comp.deflate(data)
+
+    def flush(self):
+        return self._comp.flush()
+
+class Inflate64Decompressor(object):
+
+    def __init__(self):
+        self._decomp = inflate64.Inflater()
+        self.eof = False
+
+    def decompress(self, data):
+        result = self._decomp.inflate(data)
+        self.eof = self._decomp.eof
+        return result
+
 class PPMDCompressor(object):
 
     def __init__(self, level=None):
@@ -831,7 +864,7 @@ def _check_compression(compression):
             raise RuntimeError(
                 "Compression requires the (missing) zlib module")
     elif compression == ZIP_DEFLATED64:
-        if not deflate64:
+        if not deflate64 and not inflate64:
             raise RuntimeError(
                 "Compression requires the (missing) deflate64 module")
     elif compression == ZIP_DCLIMPLODED:
@@ -847,7 +880,7 @@ def _check_compression(compression):
             raise RuntimeError(
                 "Compression requires the (missing) lzma module")
     elif compression == ZIP_ZSTANDARD:
-        if not zstandard:
+        if not zstandard and not pyzstd:
             raise RuntimeError(
                 "Compression requires the (missing) zstandard module")
     elif compression == ZIP_PPMD:
@@ -877,13 +910,16 @@ def _get_compressor(compress_type, compresslevel=None):
             # reserved compress level even after "true deflate64 module" is out
             assert codecs7z is not None
             return codecs7z.deflate64_compressobj(compresslevel-10)
-        assert codecs7z is not None
+        assert codecs7z is not None or inflate64 is not None
+        if inflate64 is not None:
+            return Inflate64Compressor(compresslevel)
         return codecs7z.deflate64_compressobj(compresslevel)
     elif compress_type == ZIP_DCLIMPLODED:
         if compresslevel is None:
             compresslevel = 3
         compressmethod = compresslevel//10
         compresslevel = compresslevel%10
+        assert dclimplode is not None
         return dclimplode.compressobj(compressmethod, 1<<(9+compresslevel))
     elif compress_type == ZIP_BZIP2:
         if compresslevel is not None:
@@ -896,11 +932,15 @@ def _get_compressor(compress_type, compresslevel=None):
         assert lzma is not None
         return LZMACompressor(compresslevel)
     elif compress_type == ZIP_XZ:
+        assert lzma is not None
         return lzma.LZMACompressor(lzma.FORMAT_XZ, preset=compresslevel)
     elif compress_type == ZIP_ZSTANDARD:
         if compresslevel is None:
             compresslevel = 3
-        return zstandard.ZstdCompressor(level=compresslevel, threads=4).compressobj()
+        assert zstandard is not None or pyzstd is not None
+        if zstandard is not None:
+            return zstandard.ZstdCompressor(level=compresslevel, threads=4).compressobj()
+        return pyzstd.ZstdCompressor({pyzstd.CParameter.compressionLevel: compresslevel, pyzstd.CParameter.nbWorkers: 4})
     elif compress_type == ZIP_PPMD:
         assert pyppmd is not None
         return PPMDCompressor(compresslevel)
@@ -916,7 +956,9 @@ def _get_decompressor(compress_type):
             return isal_zlib.decompressobj(-15)
         return zlib.decompressobj(-15)
     elif compress_type == ZIP_DEFLATED64:
-        return deflate64.Deflate64()
+        if deflate64 is not None:
+            return deflate64.Deflate64()
+        return Inflate64Decompressor()
     elif compress_type == ZIP_DCLIMPLODED:
         return dclimplode.decompressobj()
     elif compress_type == ZIP_BZIP2:
@@ -926,7 +968,9 @@ def _get_decompressor(compress_type):
     elif compress_type == ZIP_XZ:
         return lzma.LZMADecompressor(lzma.FORMAT_XZ)
     elif compress_type == ZIP_ZSTANDARD:
-        return zstandard.ZstdDecompressor().decompressobj()
+        if zstandard is not None:
+            return zstandard.ZstdDecompressor().decompressobj()
+        return pyzstd.ZstdDecompressor()
     elif compress_type == ZIP_PPMD:
         return PPMDDecompressor()
     else:
