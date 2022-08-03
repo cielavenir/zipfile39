@@ -1,3 +1,7 @@
+## 0.0.6.0
+
+- Support inflate64/pyzstd modules (they are fallbacks, the feature does not change)
+
 ## 0.0.5.3
 
 - Fixed pypi desc display
