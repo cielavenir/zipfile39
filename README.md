@@ -24,7 +24,7 @@
 - Optional requisites:
     - [backports.lzma](https://pypi.org/project/backports.lzma/) (Python2 only)
     - [dclimplode](https://pypi.org/project/dclimplode/)
-    - [zstandard](https://pypi.org/project/zstandard/)
+    - [zstandard](https://pypi.org/project/zstandard/) or [pyzstd](https://pypi.org/project/pyzstd/) (Py2 unavailable)
     - [isal](https://pypi.org/project/isal/)
         - Python2 need `python -m pip install git+https://github.com/cielavenir/python-isal-py2@0.11.0-py2`
             - (now this branch support macOS as well)
@@ -38,6 +38,7 @@
         - Need 0.2.0 or later.
         - Python2 need `python -m pip install git+https://github.com/cielavenir/zipfile-deflate64@py2`
         - Also see https://github.com/cielavenir/zipfile-deflate64/releases/tag/v0.2.0.4
+        - or [inflate64](https://pypi.org/project/inflate64/) (Py2 unavailable)
 - Test requisites:
     - All optional requisites
     - [backports.tempfile](https://pypi.org/project/backports.tempfile/) (Python2 only)
@@ -49,5 +50,5 @@ Some dependencies need complex build procedures. For your sake those wheels are 
 
 ### Legal
 
-- I'm not sure about the license term when pyppmd / codecs7z is loaded (I'm not lawyer though).
+- I'm not sure about the license term when pyppmd / codecs7z / inflate64 is loaded (I'm not lawyer though).
     - For pyppmd, note that PPMd code itself is public domain. See https://github.com/miurahr/pyppmd/issues/5#issuecomment-892280467 for detail.
