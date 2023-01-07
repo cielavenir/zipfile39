@@ -40,10 +40,10 @@ jobs:
             os: windows-latest
             architecture: "x86"
           - python-version: '3.4'
-            os: windows-2019
+            os: windows-latest
             architecture: "x64"
           - python-version: '3.4'
-            os: windows-2019
+            os: windows-latest
             architecture: "x86"
           - python-version: '2.7'
             os: windows-latest
@@ -81,8 +81,10 @@ jobs:
         msiexec /i VCForPython27.msi /qn
     #     choco install vcpython27 -f -y
     - name: "Install Visual C++ for Python 3.4"
-      if: ${{ matrix.os == 'windows-2019' && matrix.python-version == '3.4' }}
+      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
+        Install-Module -Name "VcRedist" -Force
+        Uninstall-VcRedist -Release 2010 -Confirm:$True
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
         choco install KB2519277 -f -y
     - name: Upgrade pip
