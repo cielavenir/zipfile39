@@ -1,5 +1,9 @@
 from setuptools import setup
 
+versionContext = {}
+with open('zipfile39/version.py') as f:
+    exec(f.read(), versionContext)
+
 import sys
 install_requires = [
     'pathlib2; python_version < "3"',
@@ -25,12 +29,12 @@ setup(
     description='Backport of zipfile Python 3.9 to Python 2.7 with some enhancements',
     long_description=open("README.md").read(),
     long_description_content_type='text/markdown',
-    version='0.0.6.0',
+    version=versionContext['__version__'],
     url='https://github.com/cielavenir/zipfile39',
     license='PSF',
     author='cielavenir',
     author_email='cielartisan@gmail.com',
-    py_modules=['zipfile39'],
+    packages=['zipfile39'],
     zip_safe=False,
     include_package_data=True,
     platforms='any',
