@@ -85,7 +85,8 @@ jobs:
       run: |
         Install-Module -Name "VcRedist" -Force
         Get-InstalledVcRedist
-        Uninstall-VcRedist -Release 2010 -Confirm:$True
+        Uninstall-VcRedist -Release 2010 -Architecture x86 -Confirm:$True
+        Uninstall-VcRedist -Release 2010 -Architecture x64 -Confirm:$True
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
         choco install KB2519277 -f -y
     - name: Upgrade pip
