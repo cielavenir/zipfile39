@@ -56,7 +56,7 @@ methods = [
     (zipfile.ZIP_XZ, 6),
     (zipfile.ZIP_PPMD, 5),
 ]
-if 'compresslevel' in signature(zipfile._get_compressor).parameters:
+if True:  # 'compresslevel' in signature(zipfile._get_compressor).parameters:
     methods.extend([
         (zipfile.ZIP_DEFLATED, 19),
         (zipfile.ZIP_DEFLATED, -10),
@@ -77,7 +77,7 @@ def test_zipfile_writeread(fname,method,level):
     
     with TemporaryDirectory() as tmpdir:
         kwargs = {'compression': method}
-        if 'compresslevel' in signature(zipfile._get_compressor).parameters:
+        if True:  # 'compresslevel' in signature(zipfile._get_compressor).parameters:
             kwargs['compresslevel'] = level
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
             zip.write(fname)
@@ -104,7 +104,7 @@ def test_zipfile_open(fname,method,level):
     
     with TemporaryDirectory() as tmpdir:
         kwargs = {'compression': method}
-        if 'compresslevel' in signature(zipfile._get_compressor).parameters:
+        if True:  # 'compresslevel' in signature(zipfile._get_compressor).parameters:
             kwargs['compresslevel'] = level
         with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
             with zip.open(fname, 'w') as zf:
