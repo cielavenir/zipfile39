@@ -40,10 +40,10 @@ jobs:
             os: windows-latest
             architecture: "x86"
           - python-version: '3.4'
-            os: windows-latest
+            os: windows-2019
             architecture: "x64"
           - python-version: '3.4'
-            os: windows-latest
+            os: windows-2019
             architecture: "x86"
           - python-version: '2.7'
             os: windows-latest
@@ -84,7 +84,6 @@ jobs:
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
-        cat C:\ProgramData\chocolatey\logs\chocolatey.log
         choco install KB2519277 -f -y
     - name: Upgrade pip
       if: ${{ matrix.python-version != '2.7' && matrix.python-version != '3.4' }}
