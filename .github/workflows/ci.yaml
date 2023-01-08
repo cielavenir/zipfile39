@@ -53,7 +53,7 @@ jobs:
             architecture: "x86"
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: Checkout submodule
       run: |
         git submodule init
@@ -63,7 +63,7 @@ jobs:
         7z i
     - name: Set up Python ${{ matrix.python-version }}
       if: ${{ matrix.python-version != 'pyston' }}
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
         architecture: ${{ matrix.architecture }}
@@ -80,7 +80,7 @@ jobs:
         curl -L -O https://github.com/reider-roque/sulley-win-installer/raw/master/VCForPython27.msi
         msiexec /i VCForPython27.msi /qn
     #     choco install vcpython27 -f -y
-    - name: "Uninstall Visual C++ for Python 3.4"
+    - name: "Uninstall Visual C++ Redistributable for Python 3.4"
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       shell: cmd
       run: |
@@ -89,10 +89,6 @@ jobs:
     - name: "Install Visual C++ for Python 3.4"
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
-        Install-Module -Name "VcRedist" -Force
-        Get-InstalledVcRedist
-        #Uninstall-VcRedist -Release 2010 -Architecture x86 -Confirm:$True
-        #Uninstall-VcRedist -Release 2010 -Architecture x64 -Confirm:$True
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
         choco install KB2519277 -f -y
     - name: Upgrade pip
@@ -160,7 +156,7 @@ jobs:
         python -m pip install isal==0.11.1
     - name: Upload wheel
       if: ${{ matrix.os == 'windows-latest' }}
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: windows_wheel
         path: dist
