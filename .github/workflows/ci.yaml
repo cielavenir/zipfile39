@@ -80,15 +80,11 @@ jobs:
         curl -L -O https://github.com/reider-roque/sulley-win-installer/raw/master/VCForPython27.msi
         msiexec /i VCForPython27.msi /qn
     #     choco install vcpython27 -f -y
-    - name: "Uninstall Visual C++ Redistributable for Python 3.4"
-      if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
-      shell: cmd
-      run: |
-        MsiExec.exe /passive /X{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}
-        MsiExec.exe /passive /X{1D8E6291-B0D5-35EC-8441-6616F567A0F7}
     - name: "Install Visual C++ for Python 3.4"
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
+        MsiExec.exe /passive '/X{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}'
+        MsiExec.exe /passive '/X{1D8E6291-B0D5-35EC-8441-6616F567A0F7}'
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
         choco install KB2519277 -f -y
     - name: Upgrade pip
