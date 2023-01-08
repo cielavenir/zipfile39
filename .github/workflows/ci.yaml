@@ -83,10 +83,12 @@ jobs:
     - name: "Install Visual C++ for Python 3.4"
       if: ${{ matrix.os == 'windows-latest' && matrix.python-version == '3.4' }}
       run: |
-        Install-Module -Name "VcRedist" -Force
-        Get-InstalledVcRedist
-        Uninstall-VcRedist -Release 2010 -Architecture x86 -Confirm:$True
-        Uninstall-VcRedist -Release 2010 -Architecture x64 -Confirm:$True
+        #Install-Module -Name "VcRedist" -Force
+        #Get-InstalledVcRedist
+        #Uninstall-VcRedist -Release 2010 -Architecture x86 -Confirm:$True
+        #Uninstall-VcRedist -Release 2010 -Architecture x64 -Confirm:$True
+        MsiExec.exe /passive /X{F0C3E5D1-1ADE-321E-8167-68EF0DE699A5}
+        MsiExec.exe /passive /X{1D8E6291-B0D5-35EC-8441-6616F567A0F7}
         choco install windows-sdk-7.1 -f -y --version 7.1.7600.20220204
         choco install KB2519277 -f -y
     - name: Upgrade pip
