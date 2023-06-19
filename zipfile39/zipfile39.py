@@ -123,7 +123,7 @@ def text_encoding(encoding=None):
         return io.text_encoding(encoding)
     if encoding is not None:
         return encoding
-    return 'utf-8' if getattr(sys.flags, 'utf8_mode') else locale.getpreferredencoding(False)
+    return 'utf-8' if getattr(sys.flags, 'utf8_mode', False) else locale.getpreferredencoding(False)
 
 __all__ = ["BadZipFile", "BadZipfile", "error",
            "ZIP_STORED", "ZIP_DEFLATED", "ZIP_DEFLATED64", "ZIP_DCLIMPLODED", "ZIP_PKIMPLODED",
