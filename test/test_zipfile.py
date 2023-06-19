@@ -153,7 +153,10 @@ def test_zipfile_pathopen(method,level):
             # zipfile.Path(filename) does not close the file with context
             path = zipfile.Path(zip)
             with (path/fname).open() as f:
-                assert f.readline().strip() == 'Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit'
+                try:
+                    assert f.readline().strip() == 'Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit'
+                finally:
+                    f.read()
 
 @pytest.mark.parametrize('fname,level',[
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
