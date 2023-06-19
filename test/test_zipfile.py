@@ -149,9 +149,11 @@ def test_zipfile_pathopen(method,level):
                     zf.write(body[chunksiz*i:chunksiz*(i+1)])
         if avail7z[method]:
             subprocess.check_call(['7z', 't', os.path.join(tmpdir, 'test.zip')], shell=False)
-        path = zipfile.Path(os.path.join(tmpdir, 'test.zip'))
-        with (path/fname).open() as f:
-            assert f.readline().strip() == 'Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit'
+        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'r') as zip:
+            # zipfile.Path(filename) does not close the file with context
+            path = zipfile.Path(zip)
+            with (path/fname).open() as f:
+                assert f.readline().strip() == 'Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit'
 
 @pytest.mark.parametrize('fname,level',[
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
