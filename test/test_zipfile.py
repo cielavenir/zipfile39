@@ -128,6 +128,36 @@ def test_zipfile_open(fname,method,level):
             assert decsiz == st.st_size
             assert hashobj.hexdigest() == sha256
 
+@pytest.mark.parametrize('method,level',methods)
+def test_zipfile_pathopen(method,level):
+    fname = 'data/10000SalesRecords.csv'
+    chunksiz = 512
+    st = os.stat(fname)
+    cnt = (st.st_size+chunksiz-1)//chunksiz
+
+    with open(fname, 'rb') as f:
+        body = f.read()
+        sha256 = hashlib.sha256(body).hexdigest()
+
+    with TemporaryDirectory() as tmpdir:
+        kwargs = {'compression': method}
+        if True:  # 'compresslevel' in signature(zipfile._get_compressor).parameters:
+            kwargs['compresslevel'] = level
+        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'w', **kwargs) as zip:
+            with zip.open(fname, 'w') as zf:
+                for i in range(cnt):
+                    zf.write(body[chunksiz*i:chunksiz*(i+1)])
+        if avail7z[method]:
+            subprocess.check_call(['7z', 't', os.path.join(tmpdir, 'test.zip')], shell=False)
+        with zipfile.ZipFile(os.path.join(tmpdir, 'test.zip'), 'r') as zip:
+            # zipfile.Path(filename) does not close the file with context
+            path = zipfile.Path(zip)
+            with (path/fname).open() as f:
+                try:
+                    assert f.readline().strip() == 'Region,Country,Item Type,Sales Channel,Order Priority,Order Date,Order ID,Ship Date,Units Sold,Unit Price,Unit Cost,Total Revenue,Total Cost,Total Profit'
+                finally:
+                    f.read()
+
 @pytest.mark.parametrize('fname,level',[
     e for e in itertools.product(fnames, [5])  # list(range(1,10)))
 ])

@@ -25,6 +25,7 @@ import sys
 import threading
 import time
 import errno
+import locale
 
 try:
     from pathlib import Path
@@ -116,6 +117,13 @@ if not hasattr(itertools, 'filterfalse'):
 
 if sys.version_info[0]>=3:
     basestring = str
+
+def text_encoding(encoding=None):
+    if hasattr(io, 'text_encoding'):
+        return io.text_encoding(encoding)
+    if encoding is not None:
+        return encoding
+    return 'utf-8' if getattr(sys.flags, 'utf8_mode', False) else locale.getpreferredencoding(False)
 
 __all__ = ["BadZipFile", "BadZipfile", "error",
            "ZIP_STORED", "ZIP_DEFLATED", "ZIP_DEFLATED64", "ZIP_DCLIMPLODED", "ZIP_PKIMPLODED",
@@ -2632,7 +2640,7 @@ class Path(object):
             return stream
         else:
             if sys.version_info[0]>=3:
-                kwargs["encoding"] = io.text_encoding(kwargs.get("encoding"))
+                kwargs["encoding"] = text_encoding(kwargs.get("encoding"))
         return io.TextIOWrapper(stream, *args, **kwargs)
 
     @property
@@ -2645,7 +2653,7 @@ class Path(object):
 
     def read_text(self, *args, **kwargs):
         if sys.version_info[0]>=3:
-            kwargs["encoding"] = io.text_encoding(kwargs.get("encoding"))
+            kwargs["encoding"] = text_encoding(kwargs.get("encoding"))
         with self.open('r', *args, **kwargs) as strm:
             return strm.read()
 
