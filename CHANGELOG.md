@@ -1,3 +1,11 @@
+## 0.0.8.0
+
+- Fixed zipfile.Path.open encoding
+
+## 0.0.7.0
+
+- Introduced \_\_version\_\_
+
 ## 0.0.6.0
 
 - Support inflate64/pyzstd modules (they are fallbacks, the feature does not change)
